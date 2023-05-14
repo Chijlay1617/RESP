@@ -193,19 +193,19 @@ object Main {
               val energyData = powerPlant.readData()
               energyData.foreach(data => println(s"Timestamp: ${data.timestamp}, ${data.sourceName}: ${data.energy} kW"))
               println("Storage Capacity:")
-              val list: List[Double] = List()
-              val Solar_Energy: List[Double] = energyData.foldLeft(list)((list, data) => {
-                if (data.sourceName.matches("Solar Energy")) list.appended(data.energy) else list
-              })
-              val Wind_Energy: List[Double] = energyData.foldLeft(list)((list, data) => {
-                if (data.sourceName.matches("Wind Energy")) list.appended(data.energy) else list
-              })
-              val Hydro_Energy: List[Double] = energyData.foldLeft(list)((list, data) => {
-                if (data.sourceName.matches("Hydro Energy")) list.appended(data.energy) else list
-              })
-              println(s"Storage Capacity of Solar Energy: ${Solar_Energy.sum}")
-              println(s"Storage Capacity of Wind Energy: ${Wind_Energy.sum}")
-              println(s"Storage Capacity of Hydro Energy: ${Hydro_Energy.sum}")
+              def capacity(energyData: List[EnergyData], name : String) : Double = {
+                val list: List[Double] = List()
+                energyData.foldLeft(list)((list, data) => {
+                  if (data.sourceName.matches(name)) list.appended(data.energy) else list
+                }).sum
+              }
+
+              val Solar_Energy = capacity(energyData,"Solar Energy")
+              val Wind_Energy = capacity(energyData,"Wind Energy")
+              val Hydro_Energy = capacity(energyData,"Hydro Energy")
+              println(s"Storage Capacity of Solar Energy: ${Solar_Energy}")
+              println(s"Storage Capacity of Wind Energy: ${Wind_Energy}")
+              println(s"Storage Capacity of Hydro Energy: ${Hydro_Energy}")
 
             //Data analysis
             case 5 =>
